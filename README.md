@@ -1,9 +1,10 @@
 # Trolly Fish
-![Image](https://raw.githubusercontent.com/Team-ARG-Museum/ID-36-Trolly-Fish/master/art/banner-ID-36.png)
+![Image](https://raw.githubusercontent.com/T-arg/ID-36-Trolly-Fish/master/art/banner-ID-36.png)
 
 Trolly Fish :  
-**Download latest Arduboy version and source :** https://github.com/Team-ARG-Museum/ID-36-Trolly-Fish/releases/latest  
-MADE by TEAM a.r.g. : https://team-arg-museum.github.io/
+**Download latest Arduboy version and source :**
+
+MADE by TEAM a.r.g. :
 
 2016 - GAVENO - JO3RI - JUSTIN CRY
 
