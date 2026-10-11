@@ -7,7 +7,7 @@
 void stateMenuIntro()
 {
   globalCounter++;
-  sprites.drawSelfMasked(34, 4, T_arg, 0);
+  sprites.drawSelfMasked(49, 20, T_arg, 0);
   if (globalCounter > 180)
   {
     globalCounter = 0;
@@ -22,19 +22,20 @@ void stateMenuIntro()
 void stateMenuMain()
 {
   for (byte i = 0; i < 4; i++) sprites.drawSelfMasked(32 * i, 0, titleScreen, i);
-  for (byte k = 0; k < 2; k++)
+  // PLAY on top, INFO and SFX below it
+  sprites.drawPlusMask(86, 2, titleMenu_plus_mask, 0);
+  sprites.drawPlusMask(73, 14, titleMenu_plus_mask, 1);
+  sprites.drawPlusMask(99, 14, titleMenu_plus_mask, 2);
+  sprites.drawPlusMask(menuY ? 73 + (menuX * 26) : 86, 2 + (menuY * 12), bubbles_plus_mask, bubblesFrame);
+  if (arduboy.justPressed(RIGHT_BUTTON) && menuY && (!menuX)) menuX = !menuX;
+  if (arduboy.justPressed(LEFT_BUTTON) && menuY && (menuX)) menuX = !menuX;
+  if (arduboy.justPressed(DOWN_BUTTON) && (!menuY))
   {
-    for (byte j = 0; j < 2; j++)
-    {
-      sprites.drawPlusMask(73 + (j * 26), 2 + (k * 12), titleMenu_plus_mask, j + (2 * k));
-    }
+    menuY = true;
+    menuX = false;
   }
-  sprites.drawPlusMask(73 + (menuX * 26), 2 + (menuY * 12), bubbles_plus_mask, bubblesFrame);
-  if (arduboy.justPressed(RIGHT_BUTTON) && (!menuX)) menuX = !menuX;
-  if (arduboy.justPressed(LEFT_BUTTON) && (menuX)) menuX = !menuX;
-  if (arduboy.justPressed(DOWN_BUTTON) && (!menuY)) menuY = !menuY;
-  if (arduboy.justPressed(UP_BUTTON) && (menuY)) menuY = !menuY;
-  if (arduboy.justPressed(A_BUTTON | B_BUTTON)) gameState = 2 + menuX + (2 * menuY);
+  if (arduboy.justPressed(UP_BUTTON) && (menuY)) menuY = false;
+  if (arduboy.justPressed(A_BUTTON | B_BUTTON)) gameState = menuY ? STATE_MENU_INFO + menuX : STATE_MENU_PLAY;
 }
 
 void stateMenuHelp()

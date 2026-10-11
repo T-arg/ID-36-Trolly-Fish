@@ -1,9 +1,9 @@
 /*
-  Trolly Fish: http://www.team-arg.org/fish-manual.html
+  Trolly Fish: https://t-arg.github.io/ID-36-Trolly-Fish/
 
-  Arduboy version 1.1:  http://www.team-arg.org/fish-downloads.html
+  Arduboy version 1.1:  https://github.com/T-arg/ID-36-Trolly-Fish
 
-  MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
+  MADE by TEAM a.r.g. : https://t-arg.github.io/
 
   2016 - GAVENO - JO3RI - JUSTIN CRY
 
