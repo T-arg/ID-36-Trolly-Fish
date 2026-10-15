@@ -15,7 +15,7 @@ void checkInputs()
 {
   if (arduboy.pressed(UP_BUTTON) && (trollyFish.y > GAME_TOP)) trollyFish.y--;
   if (arduboy.pressed(DOWN_BUTTON) && (trollyFish.y < GAME_BOTTOM)) trollyFish.y++;
-  if (arduboy.justPressed(A_BUTTON)) gameState = STATE_GAME_PAUSE;
+  if (arduboy.justPressed(A_BUTTON)) { gameState = STATE_GAME_PAUSE; sfx(SFX_PAUSE); }
   if (arduboy.justPressed(B_BUTTON))
   {
     if (pu_shocks > 0 && shock_burst == 0)

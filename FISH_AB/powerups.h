@@ -85,11 +85,7 @@ void shootBubble()
 
     --pu_bubbles;
 
-    for (byte note = 0 ; note < 30; note++)
-    {
-      sound.tone(700 - (note * 10), 1);
-      delay(1);
-    }
+    sfx(SFX_SHOOT);
   }
 }
 
@@ -132,7 +128,7 @@ void createPowerUp(byte type)
 // Event when collision with powerup
 void triggerPowerUp(byte type)
 {
-  sound.tone(1300, 150);
+  sfx(SFX_POWER);
   switch (type)
   {
     case PU_SHOOTFISH:
@@ -267,7 +263,7 @@ void updatePowerUp()
   }
 }
 
-const byte SIN_Y[] = {
+const byte PROGMEM SIN_Y[] = {
   23, 32, 41, 48,
   54, 48, 41, 32,
 };
@@ -280,15 +276,13 @@ byte cycles = 3;
 byte streak = 0;
 byte star_type = 0;
 
+// a starfish: always 8 wide, STAR_HEIGHT high and swimming 2 pixels left per frame, so only its place is stored
 struct GameObject
 {
   public:
     uint8_t x;
     uint8_t y;
-    byte width, height;
-    byte xSpeed, ySpeed;
     bool active;
-    byte id;
 
     void resetPos();
 
@@ -300,7 +294,7 @@ void GameObject::resetPos()
 {
   x += 128;
 
-  if (cycles > 0 && id < MAX_STARS)
+  if (cycles > 0 && (this - starFish) < MAX_STARS)      // the first MAX_STARS are the regular stars, the others come from turned enemies
     --cycles;
   else
     active = false;
@@ -329,9 +323,7 @@ void createStar(byte _x, byte _y)
     {
       starFish[i].x = _x;
       starFish[i].y = _y;
-      starFish[i].xSpeed = -2;
       starFish[i].active = true;
-      starFish[i].id = i;
 
       break;
     }
@@ -346,10 +338,6 @@ void startStarFish()
   {
     starFish[i].x = 128;
     starFish[i].y = 0;
-    starFish[i].width = 8;
-    starFish[i].height = STAR_HEIGHT;
-    starFish[i].xSpeed = -2;
-    starFish[i].ySpeed = 0;
     starFish[i].active = false;
   }
 }
@@ -364,7 +352,7 @@ void initStarFish(byte type)
         for (byte i = 0; i < MAX_STARS; ++i)
         {
           starFish[i].x = 120 + (128 / MAX_STARS * i);
-          starFish[i].y = SIN_Y[i] - 12;
+          starFish[i].y = pgm_read_byte(&SIN_Y[i]) - 12;
           starFish[i].active = true;
           cycles = 3 * MAX_STARS;
         }
@@ -377,7 +365,7 @@ void initStarFish(byte type)
         for (byte i = 0; i < MAX_STARS; ++i)
         {
           starFish[i].x = 120 + (128 / MAX_STARS * i);
-          starFish[i].y = (SIN_Y[i] / 3) - 12 + y;
+          starFish[i].y = (pgm_read_byte(&SIN_Y[i]) / 3) - 12 + y;
           starFish[i].active = true;
           cycles = 3 * MAX_STARS;
         }
@@ -438,7 +426,7 @@ void updateStarFish()
         }
       }
 
-      starFish[i].x += starFish[i].xSpeed;
+      starFish[i].x -= 2;
       if (starFish[i].x < GAME_LEFT)
       {
         starFish[i].resetPos();
@@ -454,11 +442,11 @@ void checkIfScored() {
 
   for (byte i = 0; i < TOTAL_STARS; ++i)
   {
-    Rect starFishPoint = {.x = starFish[i].x, .y = starFish[i].y, .width = starFish[i].width, starFish[i].height};
+    Rect starFishPoint = {.x = starFish[i].x, .y = starFish[i].y, .width = 8, .height = STAR_HEIGHT};
 
     if (arduboy.collide(starFishPoint, playerRect))
     {
-      sound.tone(300, 40);
+      sfx(SFX_STAR);
       scorePlayer++;
       starFish[i].resetPos();
       ++streak;

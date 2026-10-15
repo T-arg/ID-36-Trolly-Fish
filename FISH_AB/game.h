@@ -67,7 +67,7 @@ void stateGamePause()
     sprites.drawSelfMasked(40, 20, pause, 0);
     drawWeed();
     drawBubbles(false);
-    if (arduboy.justPressed(A_BUTTON)) gameState = STATE_GAME_PLAYING;
+    if (arduboy.justPressed(A_BUTTON)) { gameState = STATE_GAME_PLAYING; sfx(SFX_PAUSE); }
 };
 
 

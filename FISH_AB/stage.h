@@ -55,7 +55,7 @@ struct SmallBubbles
 {
   public:
     byte x;
-    int y;
+    int8_t y;
     byte speed;
     byte type;
     void resetPos(boolean test);
@@ -188,7 +188,7 @@ boolean checkGameOver()
             default:
               giveBonus(enemyFish[i].x, enemyFish[i].y + 8, 1);
           }
-          sound.tone(200, 50);
+          sfx(SFX_POP);
           enemyFish[i].type = ENEMY_BUBBLE;
             
           bubbleBullet.active = false;
@@ -200,7 +200,7 @@ boolean checkGameOver()
         
         if (bitRead(powerups,PU_LIFEFISH)) // extra life
         {
-          sound.tone(280, 50);
+          sfx(SFX_LIFE);
           bitClear(powerups,PU_LIFEFISH);
           enemyFish[i].x -= 32;
           enemyFish[i].resetPos();
@@ -209,11 +209,8 @@ boolean checkGameOver()
         }
         arduboy.setFrameRate(60);
         fr = 60;
-        for (byte note = 0 ; note < 30; note++)
-        {
-          sound.tone(400 - (note * 10), 300);
-          delay(15);
-        }
+        sfx(SFX_DIE);
+        delay(450);                      // the screen freezes while the fish sinks
         return true;
       }
     }
@@ -223,54 +220,14 @@ boolean checkGameOver()
 
 
 
+// the score with 6 digits, zero padded
 void drawScore(byte scoreX, byte scoreY, byte fontType)
 {
-  char buf[10];
-  //scorePlayer = arduboy.cpuLoad();
-  ltoa(scorePlayer, buf, 10);
-  char charLen = strlen(buf);
-  char pad = 6 - charLen;
-
-  //draw 0 padding
-  for (byte i = 0; i < pad; i++)
+  unsigned long s = scorePlayer;
+  for (byte i = 6; i--; s /= 10)
   {
-    switch (fontType)
-    {
-      case SCORE_SMALL_FONT:
-        sprites.drawPlusMask(scoreX + (7 * i), scoreY, numbersSmall_plus_mask, 0);
-        break;
-      case SCORE_BIG_FONT:
-        sprites.drawSelfMasked(scoreX + (10 * i), scoreY, numbersBig, 0);
-        break;
-    }
-  }
-
-  for (byte i = 0; i < charLen; i++)
-  {
-    char digit = buf[i];
-    byte j;
-    if (digit <= 48)
-    {
-      digit = 0;
-    }
-    else {
-      digit -= 48;
-      if (digit > 9) digit = 0;
-    }
-
-    for (byte z = 0; z < 10; z++)
-    {
-      if (digit == z) j = z;
-    }
-    switch (fontType)
-    {
-      case SCORE_SMALL_FONT:
-        sprites.drawPlusMask(scoreX + (pad * 7) + (7 * i), scoreY, numbersSmall_plus_mask, digit);
-        break;
-      case SCORE_BIG_FONT:
-        sprites.drawSelfMasked(scoreX + (pad * 10) + (10 * i), scoreY, numbersBig, digit);
-        break;
-    }
+    if (fontType == SCORE_BIG_FONT) sprites.drawSelfMasked(scoreX + 10 * i, scoreY, numbersBig, s % 10);
+    else sprites.drawPlusMask(scoreX + 7 * i, scoreY, numbersSmall_plus_mask, s % 10);
   }
 }
 

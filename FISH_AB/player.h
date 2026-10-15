@@ -41,7 +41,7 @@ void drawTrollyFish()
 {
   if (arduboy.everyXFrames(3) && shock_burst > 0) // Manage shock bursting
     {
-      sound.tone(900, 25);
+      sfx(SFX_SHOCK);
       --shock_burst;
     }
 
